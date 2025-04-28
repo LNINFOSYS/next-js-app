@@ -1,0 +1,20 @@
+# This file is part of the Next.js app repository.
+name: Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+
+    steps:
+    - uses: actions/checkout@v4
+    - run: docker build . -t  pankajdocker1977/next-js-app
+    - run: echo "${{secrets.DOCKER_HUB_PASSWORD}}" | docker login -u  ${{secrets.DOCKER_HUB_LOGIN}} --password-stdin 
+    - run: docker push pankajdocker1977/next-js-app:tagname
+
+    # test 

@@ -1,4 +1,4 @@
-
+# This file is part of the Next.js app repository. for testing the deployment process.
 name: Deploy
 
 on:
@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - run: docker build . -t harishneel/next-js-app
-    - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin 
-    - run: docker push harishneel/next-js-app:latest
+    - run: docker build . -t  pankajdocker1977/next-js-app
+    - run: echo "{{ secrets.PASSWORD }}" | docker login -u "${{ secrets.USERNAME }}" --password-stdin
+ 
+    - run: docker push  pankajdocker1977/next-js-app:latest
+    
