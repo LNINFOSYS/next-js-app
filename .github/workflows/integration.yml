@@ -1,51 +1,67 @@
-
-name: Integration
-
+#describe the wf
+name: integration
+#on block signifies on which event these jobs should be triggered
+#on: [push,pull_request]
 on:
   push:
-    branches: [ "main" ]
+    #target branch is mb. branches is an array
+    branches: ["main"] # we can use [] or - to specify multiple branches
   pull_request:
-    branches: [ "main" ]
-
+    branches:
+      #target branch is mb
+      - main
 jobs:
-  build:
-
+  #build the proj
+  job-1:
+    #all the jobs will not run on localmachine but will run on gh servers so we specify which machine gh should use in its server
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-
+        #node-version: [16.x,18.x,20.x]
+        node-version:
+          - 16.x
+          - 18.x
+          - 20.x
+    #these all steps gh will do to complete the job-1
+    #inside steps we define actions
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
-
-    - name: "Build command"
-      run: npm run build
-
-  unit-tests:
-
+      #actions/checkout@v4 tells gh to checkout to the current branch. by default gh will perform all these steps on mb. eg if we are working on fb then gh will checkout to fb
+      - name: checkout to fb
+        # we use "uses" to use predefined actions
+        uses: actions/checkout@v4
+      #setup the node env and run this step for all the node-version mention in strategy block
+      - name: use nodejs ${{matrix.node-version}}
+        uses: actions/setup-node@v3
+        #we use "with" cmd to configure the predefined actions
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: npm
+      #to build the proj we need to install all the depen in the machine
+      - name: install all the required dependencies
+        # we write shell script cmd using "run" cmd
+        run: npm i
+      - name: build the proj
+        run: npm run build
+  #after proj build is complete we test the proj
+  job-2:
     runs-on: ubuntu-latest
-
+    needs: job-1
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-
+        node-version:
+          - 16.x
+          - 18.x
+          - 20.x
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
-
-    - name: "Running test cases"
-      run: npm run test
+      #checkout to current fb
+      - name: checkout to current fb
+        uses: actions/checkout@v4
+      - name: setup node env fo diff node vers
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{matrix.node-version}}
+          cache: npm
+      - name: install all the req depen
+        run: npm i
+      - name: test the proj
+        run: npm test
