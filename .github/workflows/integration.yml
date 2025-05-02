@@ -3,10 +3,10 @@ name: integration
 #on block signifies on which event these jobs should be triggered
 #on: [push,pull_request]
 on:
-  - push:
+  push:
     #target branch is mb. branches is an array
     branches: ["main"] # we can use [] or - to specify multiple branches
-  - pull_request:
+  pull_request:
     branches:
       #target branch is mb
       - main
