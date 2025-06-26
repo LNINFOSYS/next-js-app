@@ -1,16 +1,16 @@
 
-name: Integration
+name: Integration # name of the workflow or what yaml file denotes
 
-on:
-  push:
+on: # on which event this job should trigger
+  push: #push happen to main branch
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-jobs:
+jobs: # has multiple jobs
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # which OS to run the job on run on github servers
 
     strategy:
       matrix:
@@ -38,14 +38,14 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - uses: actions/checkout@v4 # checkout to the current branch default is main branch
+    - name: Use Node.js ${{ matrix.node-version }} # use the node version from matrix completely optional
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ matrix.node-version }} # told in strategy
         cache: 'npm'
     - name: "Installing Dependencies"
       run: npm i
-
     - name: "Running test cases"
       run: npm run test
+    
