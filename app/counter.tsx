@@ -10,6 +10,8 @@ export default function Counter() {
       <button type="button" onClick={() => setCount(count + 1)}>
         +
       </button>
+
+      
     </>
   );
 }
