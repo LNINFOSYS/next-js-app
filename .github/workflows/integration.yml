@@ -1,4 +1,4 @@
-
+# This workflow is triggered on pushes and pull requests to the main branch.
 name: Integration
 
 on:
