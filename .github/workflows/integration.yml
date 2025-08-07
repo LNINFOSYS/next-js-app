@@ -15,11 +15,12 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4     #it tell that checkout to the current(that is feature) branch.
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4            #tells that we have to setup nodejs env for our current project scenario
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -29,6 +30,8 @@ jobs:
     - name: "Build command"
       run: npm run build
 
+
+
   unit-tests:
 
     runs-on: ubuntu-latest
@@ -36,16 +39,18 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4     #it tell that checkout to the current(that is feature) branch.
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4            #tells that we have to setup nodejs env for our current project scenario
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: "Installing Dependencies"
       run: npm i
 
-    - name: "Running test cases"
+    - name: "Running Test Cases"
       run: npm run test
+

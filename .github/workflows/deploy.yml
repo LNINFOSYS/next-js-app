@@ -4,15 +4,16 @@ name: Deploy
 on:
   push:
     branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]        this is we dont want this, iss baar jab sirf main branch pe kuch hoga tab hee jobs done karwne hain.
 
 jobs:
   deploy:
 
     runs-on: ubuntu-latest
 
-
     steps:
-    - uses: actions/checkout@v4
-    - run: docker build . -t harishneel/next-js-app
-    - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin 
-    - run: docker push harishneel/next-js-app:latest
+    - uses: actions/checkout@v4     #it tell that checkout to the current(that is feature) branch.
+    - run: docker build . -t sumitraa/next-js-app 
+    - run: echo "${{secrets.DOCKERHUB_PASSWORD}}"  |  docker login -u ${{secrets.DOCKEHUB_USERNAME}}
+    - run: docker push sumitraa/next-js-app:latest
