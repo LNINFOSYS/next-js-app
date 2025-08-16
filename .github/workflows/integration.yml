@@ -1,36 +1,45 @@
-
 name: Integration
 
+# on: on which events this jobs should be triggered
+# main-> target branch on which events are happening
+#e.g "on" "pull_request" to the "main" branch, we need to run "jobs".
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
+  #Our first task is to build the program what I have written.
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
 
+    #actions/checkout tells github to checkout to the current branch
+    # this is a complete independent REPOSITORY in github which we uses directly.
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        # ask github to setup node for us. and use certain version, also cash npm for us in advance
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      #name ->is just a name for other developers
+      - name: "Installing Dependencies"
+        #install all dependencies written in package.json
+        run: npm i
 
-    - name: "Build command"
-      run: npm run build
+      - name: "Build command"
+        #build the app. the below script is written in package.json.
+        run: npm run build
 
+  #second task is to run tests on my program so it error free.
   unit-tests:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -38,14 +47,15 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: "Installing Dependencies"
+        run: npm i
 
-    - name: "Running test cases"
-      run: npm run test
+      - name: "Running test cases"
+        #script is available and is written in package.json.
+        run: npm run test
