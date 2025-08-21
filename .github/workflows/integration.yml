@@ -1,4 +1,4 @@
-name: Integration_build and test
+name: Integration
 
 on:
   push:
