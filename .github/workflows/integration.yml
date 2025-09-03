@@ -1,51 +1,52 @@
+#indentation is important
+name: Integration #what is yml file going to denote
 
-name: Integration
-
-on:
+on: # on which event these jobs will be trigger 
   push:
-    branches: [ "main" ]
+    branches: [ "main" ] # whenever push happening in main branch it will trigger below jobs
   pull_request:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build: #name of first job and can name it whatever we want 
 
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
-
-    - name: "Build command"
-      run: npm run build
-
-  unit-tests:
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #which machine should github use in their server
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
-    steps:
-    - uses: actions/checkout@v4
+    steps: #steps github has to do to execute the particular job
+    - uses: actions/checkout@v4 #checkout the feature branch github has a repo for actions and checkout have all the code 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4 #setup node environment before doing anything else
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
+    - name : "Installing dependencies" #just a name for below command
+      run: npm i 
+    - name : "Build command"
+      run: npm run build 
 
-    - name: "Running test cases"
-      run: npm run test
+      
+  unit-test: #name of first job and can name it whatever we want 
+
+    runs-on: ubuntu-latest #which machine should github use in their server
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps: #steps github has to do to execute the particular job
+    - uses: actions/checkout@v4 #checkout the feature branch github has a repo for actions and checkout have all the code 
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4 #setup node environment before doing anything else
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - name : "Installing dependencies" #just a name for below command
+      run: npm i 
+    - name : "running testcases "
+      run: npm run test 
