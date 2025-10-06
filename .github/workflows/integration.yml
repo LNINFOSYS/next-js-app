@@ -1,49 +1,70 @@
-
+# this specifiy what the yaml file is going to denote 'يامل معمول ليه'
 name: Integration
 
+# On block determine event that will trigger these jobs
 on:
+  # Keep it to make jobs run after merging from feature branch to main branches occured not only during integration
   push:
     branches: [ "main" ]
+  # Every pull request event happens to main branch you have to run below jobs
   pull_request:
     branches: [ "main" ]
 
+# Contains all jobs should be triggered when event occurs
 jobs:
+  # name of first job = job name
   build:
-
+    # runs on property: that means our job will run on github servers not our local machine
+    # so we specifiy which machine should github use in thier server
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    # Very Important part: these are steps that github has to do to completely execute this particular job
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v4  # it tells github to check the current branch (feature branch)
+    - name: Use Node.js ${{ matrix.node-version }} # used to denote what is following it (optional)
+      uses: actions/setup-node@v4  # it tells github to set up node enviroment before doing anything else with the project
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        node-version: ${{ matrix.node-version }} # After setting node js up, we need to set it up with several node versions as well // tell github runs all these jobs on nodejs 18,20,22
+        cache: 'npm' # ez way to handle all our packages
+
+    # to build our project, first we need to install project dependencies
+    # tell github to install all depenencies in packages.json
+    # for readability purpose:
     - name: "Installing Dependencies"
       run: npm i
 
-    - name: "Build command"
+    - name: "Build Command"
       run: npm run build
+  
 
+    # name of first job = job name
   unit-tests:
-
+    # runs on property: that means our job will run on github servers not our local machine
+    # so we specifiy which machine should github use in thier server
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
+    # Very Important part: these are steps that github has to do to completely execute this particular job
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v4  # it tells github to check the current branch (feature branch)
+    - name: Use Node.js ${{ matrix.node-version }} # used to denote what is following it (optional)
+      uses: actions/setup-node@v4  # it tells github to set up node enviroment before doing anything else with the project
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        node-version: ${{ matrix.node-version }} # After setting node js up, we need to set it up with several node versions as well // tell github runs all these jobs on nodejs 18,20,22
+        cache: 'npm' # ez way to handle all our packages
+
+    # to build our project, first we need to install project dependencies
+    # tell github to install all depenencies in packages.json
+    # for readability purpose:
     - name: "Installing Dependencies"
       run: npm i
 
