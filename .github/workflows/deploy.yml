@@ -1,18 +1,24 @@
-
 name: Deploy
 
 on:
+  # directly merging happening to main branch
   push:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
+
   deploy:
-
-    runs-on: ubuntu-latest
-
-
+    runs_on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v4
-    - run: docker build . -t harishneel/next-js-app
-    - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin 
-    - run: docker push harishneel/next-js-app:latest
+    # we remove steps that are in integration because it's part of building process
+    - run: docker build . -t amrabdelaty/next-js-app-tutorial
+    # work around to automatic access of github to docker hub, i will let giyhub system access my system
+    # remove the user and access token using github secrets to not appear in deploy.yml file when we push it to github or merge to main branch
+    - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin
+    # how can we tell github that what you need to replace - ده الي انت محتاج تغيره
+    - run: docker push amrabdelaty/next-js-app-tutorial:latest
+
+
+
