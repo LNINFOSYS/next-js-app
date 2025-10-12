@@ -1,5 +1,5 @@
 
-name: Integration
+name: CI
 
 on:
   push:
