@@ -1,51 +1,33 @@
-
-name: Integration
+name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - ajay
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
+      # Step 1: Checkout code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: "Build command"
-      run: npm run build
+      # Step 2: Set up Node.js (change version if needed)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-  unit-tests:
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm install
 
-    runs-on: ubuntu-latest
+      # Step 4: Build the applicatio
+      - name: Build Application
+        run: npm run build
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
-
-    - name: "Running test cases"
-      run: npm run test
+      # Step 5: Run tests
+      - name: Run Tests
+        run: npm test
