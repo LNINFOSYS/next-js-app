@@ -1,0 +1,17 @@
+name: Deploy # can be named anything
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:  # can be named anything
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4   # checkout to the feature branch for performing actions
+    - run: docker build . -t rohitkumar7905/next-js-app-for-cicd
+    - run: echo "${{secrets.DOCKERHUB_PASSWORD}}" | docker login -u ${{secrets.DOCKERHUB_USERNAME}} --password-stdin
+    # echo se value ko store krnge or stdin ke input me dedenge
+    - run: docker push rohitkumar7905/next-js-app-for-cicd

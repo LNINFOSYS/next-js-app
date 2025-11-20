@@ -1,5 +1,5 @@
 
-name: Integration
+name: integration # can be named anything
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build:  # can be named anything
 
     runs-on: ubuntu-latest
 
@@ -17,19 +17,18 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4   # checkout to the feature branch for performing actions
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
+    - name: Install dependencies  # this is optional only for readability
+      run: npm install
 
-    - name: "Build command"
-      run: npm run build
+    - run: npm run build
 
-  unit-tests:
+  unit-tests:  # can be named anything
 
     runs-on: ubuntu-latest
 
@@ -38,14 +37,17 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4   # checkout to the feature branch for performing actions
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
-
-    - name: "Running test cases"
+    - name: Install dependencies  # this is optional only for readability
+      run: npm install
+      
+    - name: "Run Unit Tests"
       run: npm run test
+
+# Branch Protection Rule (if want to if all passed then only show merge button)
+# go to setting of repo -> branhes -> add rule for main(target brach) branch -> select require status checks to pass before merging
