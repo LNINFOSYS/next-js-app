@@ -1,5 +1,4 @@
-
-name: Integration
+name: Node.js CI
 
 on:
   push:
@@ -8,44 +7,52 @@ on:
     branches: [ "main" ]
 
 jobs:
+  # Job 1: Build the project across different Node.js versions
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        # Updated from v3 to v4 as per the patch
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          
+      - name: Installing Dependencies
+        run: npm i
+        
+      - name: Build Command
+        run: npm run build
 
-    - name: "Build command"
-      run: npm run build
-
+  # Job 2: Run unit tests across different Node.js versions
   unit-tests:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: "Installing Dependencies"
-      run: npm i
-
-    - name: "Running test cases"
-      run: npm run test
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        # Updated from v3 to v4 as per the patch
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          
+      - name: Installing Dependencies
+        run: npm i
+        
+      - name: Running Test Cases
+        run: npm run test
