@@ -1,0 +1,100 @@
+name: Build and Push Docker to ECR (branch -> env)
+
+on:
+  push:
+    branches:
+      - test
+      - main
+
+permissions:
+  contents: read
+  id-token: write   # required for OIDC
+  packages: write
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: 835360238037
+
+jobs:
+  build-and-push-test:
+    name: Build & push to TEST ECR (runs on test branch)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/test'
+
+    env:
+      # **Use literals here** (no nested `${{ env.* }}` expressions)
+      ECR_REGISTRY: 835360238037.dkr.ecr.us-east-1.amazonaws.com
+      ECR_REPO: testcicd
+      ROLE_ARN: arn:aws:iam::835360238037:role/github-ci-ecr-role
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials from OIDC (assume test role)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR (test)
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: Build Docker image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker build -t "${ECR_REPO}:${IMAGE_TAG}" .
+          docker tag "${ECR_REPO}:${IMAGE_TAG}" "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
+
+      - name: Push Docker image (test)
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker push "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
+
+      - name: Output pushed image URI (test)
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          echo "IMAGE_URI=${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+  build-and-push-prod:
+    name: Build & push to PROD ECR (runs on main branch)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    env:
+      ECR_REGISTRY: 835360238037.dkr.ecr.us-east-1.amazonaws.com
+      ECR_REPO: next-js-app-prod
+      ROLE_ARN: arn:aws:iam::835360238037:role/github-ci-ecr-role-prod
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials from OIDC (assume prod role)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ env.ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR (prod)
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+
+      - name: Build Docker image
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker build -t "${ECR_REPO}:${IMAGE_TAG}" .
+          docker tag "${ECR_REPO}:${IMAGE_TAG}" "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
+
+      - name: Push Docker image (prod)
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          docker push "${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
+
+      - name: Output pushed image URI (prod)
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          echo "IMAGE_URI=${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
