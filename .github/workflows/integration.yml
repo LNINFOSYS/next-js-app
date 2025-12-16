@@ -26,7 +26,7 @@ jobs:
     - name: "Installing Dependencies"
       run: npm i
 
-    - name: "Build command"
+    - name: "Building the next js app"
       run: npm run build
 
   unit-tests:
