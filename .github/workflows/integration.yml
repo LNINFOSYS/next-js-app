@@ -1,5 +1,5 @@
 
-name: playwright
+name: integration
 
 on:
   push:
