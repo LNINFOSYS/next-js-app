@@ -2,6 +2,8 @@
 name: Integration
 
 on:  # ETHULA PUSH OR PULL REWUST MAIN LA NADANTHU JOBS UILA THU NADAKUNU CONDITION
+  push:
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
