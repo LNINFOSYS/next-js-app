@@ -12,7 +12,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
+    strategy: 
       matrix:
         node-version: [18.x, 20.x, 22.x]
 
@@ -47,5 +47,5 @@ jobs:
     - name: "Installing Dependencies"
       run: npm i
 
-    - name: "Running test cases"
+    - name: "Running multiple test cases"
       run: npm run test
