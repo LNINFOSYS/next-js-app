@@ -28,6 +28,7 @@ jobs:
 
     - name: "Build command"
       run: npm run build
+      
 
   unit-tests:
 
