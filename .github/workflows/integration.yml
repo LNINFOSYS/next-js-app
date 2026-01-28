@@ -23,7 +23,7 @@ jobs:
     - name : "Install dependencies"
       run: npm i
     - name : "Building code"
-      run: npm build
+      run: npm run build
 
   unit-tests:
 
